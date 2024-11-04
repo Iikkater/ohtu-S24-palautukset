@@ -1,5 +1,5 @@
 import unittest
-from statistics_service import StatisticsService
+from statistics_service import StatisticsService, SortBy
 from player import Player
 
 class PlayerReaderStub:
@@ -41,9 +41,34 @@ class TestStatisticsService(unittest.TestCase):
         self.assertEqual(players[1].name, "Kurri")
         self.assertEqual(players[2].name, "Gretzky")
 
-    def test_top_palauttaa_oikein(self):
+    def test_top_palauttaa_oikein_ilman_parametria(self):
             
         players = self.stats.top(3)
         self.assertEqual(len(players), 3)
         self.assertEqual(players[0].name, "Gretzky")
         self.assertEqual(players[1].name, "Lemieux")
+        self.assertEqual(players[2].name, "Yzerman")
+
+    def test_top_palauttaa_oikein_pisteiden_mukaan(self):
+
+        players = self.stats.top(3, SortBy.POINTS)
+        self.assertEqual(len(players), 3)
+        self.assertEqual(players[0].name, "Gretzky")
+        self.assertEqual(players[1].name, "Lemieux")
+        self.assertEqual(players[2].name, "Yzerman")
+
+    def test_top_palauttaa_oikein_maalien_mukaan(self):
+
+        players = self.stats.top(3, SortBy.GOALS)
+        self.assertEqual(len(players), 3)
+        self.assertEqual(players[0].name, "Lemieux")
+        self.assertEqual(players[1].name, "Yzerman")
+        self.assertEqual(players[2].name, "Kurri")
+
+    def test_top_palauttaa_oikein_syottojen_mukaan(self):
+
+        players = self.stats.top(3, SortBy.ASSISTS)
+        self.assertEqual(len(players), 3)
+        self.assertEqual(players[0].name, "Gretzky")
+        self.assertEqual(players[1].name, "Yzerman")
+        self.assertEqual(players[2].name, "Lemieux")
