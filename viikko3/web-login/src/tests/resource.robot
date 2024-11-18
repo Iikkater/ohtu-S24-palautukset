@@ -9,6 +9,7 @@ ${HOME_URL}      http://${SERVER}
 ${LOGIN_URL}     http://${SERVER}/login
 ${REGISTER_URL}  http://${SERVER}/register
 ${WELCOME_URL}   http://${SERVER}/welcome
+${MAIN_URL}      http://${SERVER}/ohtu
 ${BROWSER}       chrome
 ${HEADLESS}      false
 
@@ -47,3 +48,6 @@ Go To Starting Page
 
 Go To Register Page
     Go To  ${REGISTER_URL}
+
+Go To Main Page
+    Go To  ${MAIN_URL}
