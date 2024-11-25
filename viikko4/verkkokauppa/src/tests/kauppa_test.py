@@ -89,3 +89,39 @@ class TestKauppa(unittest.TestCase):
         # varmistetaan, että metodia tilisiirto on kutsuttu oikeilla parametreilla
         self.pankki_mock.tilisiirto.assert_called_with("pekka", 42, "12345", ANY, 5)
 
+    def test_aloita_asiointi_kutsuminen_nollaa_edellisen_ostoksen_tiedot(self):
+        # tehdaan ostokset
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(2)
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        # varmistetaan, että metodia tilisiirto on kutsuttu oikeilla parametreilla
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", 42, "12345", ANY, 3)
+
+    def test_pyydetaan_uusi_viitenumero_jokaiselle_maksutapahtumalle(self):
+        # tehdaan ostokset
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.tilimaksu("pekka", "12345")
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(2)
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        # varmistetaan, että metodia tilisiirto on kutsuttu oikeilla parametreilla
+        self.assertEqual(self.pankki_mock.tilisiirto.call_count, 2)
+    
+    def test_tuotteen_poisto_korista_palauttaa_tuotteen_varastoon(self):
+        # tehdaan ostokset
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.poista_korista(1)
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        # varmistetaan, että metodia tilisiirto on kutsuttu oikeilla parametreilla
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", 42, "12345", ANY, 0)
+
+        # varmistetaan, että tuote on palautettu varastoon
+        self.varasto_mock.palauta_varastoon.assert_called()
+        
